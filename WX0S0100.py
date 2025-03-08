@@ -84,15 +84,20 @@ def get_weather(title, now_weather1, now_weather2, postCode, kinocd):
         arr_str1 = "1h雨量"
         arr_str2 = "-"
         now_weather1, now_weather2 = add_arr(now_weather1, now_weather2, arr_str1, arr_str2)
-
-    arr_vis = str(weather_data["visibility"])
-    if arr_vis == "10000":
+    
+    try:
+        arr_vis = str(weather_data["visibility"])
+        if arr_vis == "10000":
+            arr_str1 = "視程"
+            arr_str2 = "10km以上"
+        else:
+            arr_str1 = "視程"
+            arr_str2 = arr_vis
+        now_weather1, now_weather2 = add_arr(now_weather1, now_weather2, arr_str1, arr_str2)
+    except KeyError:
         arr_str1 = "視程"
-        arr_str2 = "10km以上"
-    else:
-        arr_str1 = "視程"
-        arr_str2 = arr_vis
-    now_weather1, now_weather2 = add_arr(now_weather1, now_weather2, arr_str1, arr_str2)
+        arr_str2 = "-"
+        now_weather1, now_weather2 = add_arr(now_weather1, now_weather2, arr_str1, arr_str2)
 
     arr_temp = weather_data["main"]["temp"]
     arr_humidity = weather_data["main"]["humidity"]
