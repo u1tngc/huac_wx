@@ -251,7 +251,7 @@ def get_asas():
     return url
 
 def get_wxJson(flg, postCode):
-    api_key = st.secrets["openweather_api_key"] 
+    api_key = st.secrets["general"]["openweather_api_key"] 
     zip_place = postCode 
     city_name = postCode
     lang = "ja"

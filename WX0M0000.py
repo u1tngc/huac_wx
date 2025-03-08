@@ -14,7 +14,7 @@ if not st.session_state.logged_in:
     password = st.text_input("パスワードを入力してください。", type="password")
 
     if st.button("ログイン"):
-        password_correct = st.secrets["open_pass"]
+        password_correct = st.secrets["general"]["open_pass"]
         if password == password_correct:
             st.session_state.logged_in = True  # ログイン成功
             st.rerun()  # 画面を更新してメイン画面へ
