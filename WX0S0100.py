@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 import locale
 import math
 import requests
+import streamlit as st
 
 import PK0S0100
 import WX0S0101
@@ -250,7 +251,7 @@ def get_asas():
     return url
 
 def get_wxJson(flg, postCode):
-    api_key = "813610f17fcad78884866e8e0a0b1bd1" 
+    api_key = st.secrets["openweather_api_key"] 
     zip_place = postCode 
     city_name = postCode
     lang = "ja"

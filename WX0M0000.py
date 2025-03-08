@@ -1,8 +1,6 @@
 import streamlit as st
 import WX1M0000
 
-# 事前に設定するユーザー名とパスワード
-PASSWORD = "245422kz"
 
 # セッションステートを使ってログイン状態を管理
 if "logged_in" not in st.session_state:
@@ -16,7 +14,8 @@ if not st.session_state.logged_in:
     password = st.text_input("パスワードを入力してください。", type="password")
 
     if st.button("ログイン"):
-        if password == PASSWORD:
+        password_correct = st.secrets["open_pass"]
+        if password == password_correct:
             st.session_state.logged_in = True  # ログイン成功
             st.rerun()  # 画面を更新してメイン画面へ
         else:
