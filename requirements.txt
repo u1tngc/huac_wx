@@ -1,0 +1,8 @@
+streamlit
+pypdf
+reportlab
+pillow
+selenium
+webdriver-manager
+requests
+PyPDF2
