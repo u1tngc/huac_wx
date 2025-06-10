@@ -1,0 +1,122 @@
+/* 全体 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    /* 子要素を縦に並べる */
+    align-items: center;
+    /* 水平方向に中央揃え */
+    justify-content: center;
+    /* 垂直方向に中央揃え */
+}
+
+/* ヘッダー */
+header {
+    background-color: #1e3a8a;
+    /* PANTONE280 */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+/* メインコンテンツ */
+main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.options {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.options h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.radio-group label {
+    font-size: 1.1em;
+    color: #555;
+}
+
+/* 実行ボタン */
+.submit-button {
+    background-color: #3b82f6;
+    /* DIC161に近い色 */
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.submit-button:hover {
+    background-color: #2563eb;
+}
+
+/* フッター */
+footer {
+    background-color: #1e3a8a;
+    /* PANTONE280 */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .options {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .radio-group {
+        flex-direction: column;
+    }
+
+    .radio-group input[type="radio"],
+    .radio-group label {
+        margin: 5px 0;
+    }
+}

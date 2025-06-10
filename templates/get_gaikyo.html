@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUAC気象ツール</title>
+    <link rel="stylesheet" href="../static/WX0C0007.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>HUAC気象ツール</h1>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h2>気象概況・予報</h2>
+                <div></div>
+                <form id="weatherForm" , method="post" , action="/get_gaikyo">
+                    <div class="form-group">
+                        <label for="">郵便番号：</label>
+                        <div>
+                            <textarea id="postNo" name="postNo" rows="1" placeholder="360-0222"></textarea>
+                        </div>
+                        <label for="additionalInfo">都市名:</label>
+                        <div>
+                            <textarea id="city" name="city" rows="1" placeholder="Osaka"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit">実行</button>
+                    <button type="button" onclick="location.href='/menu'" class="menu-button">Menu</button>
+                    <div>郵便番号・都市名共に空白の場合は葛和田の概況を取得</div>
+                </form>
+                {% if err %}
+                <li><a class="err">{{ err }}</a></li>
+                {% endif %}
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Yuichi Taniguchi</p>
+        </footer>
+    </div>
+</body>
+
+</html>

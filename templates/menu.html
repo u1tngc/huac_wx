@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUAC気象ツール</title>
+    <link rel="stylesheet" href="../static/WX0C0003.css">
+</head>
+
+<body>
+    <header>
+        <h1>HUAC気象ツール</h1>
+    </header>
+    <main>
+        <form method="post">
+            <section class="options">
+                <h2>機能選択</h2>
+                <label class="radio-group"><input type="radio" name="selection" value="wx" checked>WX資料取得</label>
+                <label class="radio-group"><input type="radio" name="selection" value="gaikyo">概況・予報取得</label>
+                <label class="radio-group"><input type="radio" name="selection" value="metartaf">Metar/Taf取得翻訳</label>
+                <label class="radio-group"><input type="radio" name="selection"
+                        value="metartafs">Metar/Taf一括取得翻訳</label>
+            </section>
+            <button class="submit-button">実行</button>
+        </form>
+        <a href="{{ url_for('logout') }}">ログアウト</a>
+        <div>推奨ブラウザ：Chrome</div>
+        <div>スマホでも使用できるが、画面はPCサイズで出力される。</div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Yuichi Taniguchi</p>
+    </footer>
+</body>
+
+</html>
