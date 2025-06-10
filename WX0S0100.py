@@ -267,8 +267,17 @@ def get_wxJson(flg, postCode):
     return data
 
 def unix_to_jst(unix, kinoCd):
-    # ロケールを日本語に設定
-    locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
+    # ロケール設定をtry-except文で囲む
+    try:
+        locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
+    except locale.Error:
+        # 日本語ロケールが利用できない場合は、デフォルトロケールを使用
+        try:
+            locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+        except locale.Error:
+            # それでもダメな場合は、ロケール設定をスキップ
+            pass
+    
     JST = timezone(timedelta(hours=+9), 'JST')
     # Unix時間をdatetimeオブジェクトに変換
     jst_time = datetime.fromtimestamp(unix, JST)
