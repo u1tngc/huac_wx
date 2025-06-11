@@ -8,6 +8,7 @@ from pypdf import PdfWriter
 from PyPDF2 import PdfReader, PdfWriter
 import requests
 import time
+import zoneinfo
 
 import WX0S0100
 import WX0S0200
@@ -15,11 +16,12 @@ import WX1S0001
 import WX1S0002
 
 class WX1M0000:
-    nowdatetime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    jst = zoneinfo.ZoneInfo("Asia/Tokyo")
+    nowdatetime = datetime.datetime.now(jst).strftime('%Y%m%d%H%M%S')
     
 def kyotsu_shori(shoriKbn, mt_location):
     out_file = ["",""]
-    currentDateTime = datetime.datetime.now()
+    currentDateTime = datetime.datetime.now(WX1M0000.jst)
     if shoriKbn != 0:
         currentDateTime = get_time()
         timeKbn = timeCheck(currentDateTime,1)

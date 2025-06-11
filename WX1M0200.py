@@ -7,6 +7,7 @@ import requests
 import sys
 from pypdf import PdfWriter
 import glob
+import zoneinfo
 
 import WX0S0200
 
@@ -32,7 +33,8 @@ def get_MetarTaf(inp_location):
     url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={inp_location}&hours=1&order=id%2C-obs&sep=true&taf=true'
     try:
         response = requests.get(url, timeout=7)
-        fileName_m1 = datetime.datetime.now()
+        jst = zoneinfo.ZoneInfo("Asia/Tokyo")
+        fileName_m1 = datetime.datetime.now(jst)
         fileName_m2 = fileName_m1.strftime('%Y%m%d%H%M')
         file_name = inp_location + "_" + str(fileName_m2)
         file_path = f"MetarTaf_{file_name}.txt"

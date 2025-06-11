@@ -8,11 +8,13 @@ import requests
 import sys
 import time
 from flask import flash
+import zoneinfo
 
 import WX0S0200
 
 class WX1M0300:
-    now_datetime = datetime.datetime.now()
+    jts = zoneinfo.ZoneInfo("Asia/Tokyo")
+    now_datetime = datetime.datetime.now(jts)
     filename1 = now_datetime.strftime('%Y%m%d%H%M')
 
 def get_and_transtale(inp_location,hour,shori_kbn):

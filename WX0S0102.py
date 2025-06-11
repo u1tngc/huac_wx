@@ -2,6 +2,7 @@
 #PGM-NAME:[P]WX天気概況html
 
 import datetime
+import zoneinfo
 
 def wxGaikyo_html(title, now_weather1, now_weather2, forecast,kinocd, nowdate,path):
     text = make_head()
@@ -313,7 +314,8 @@ def remake_forecast(forecast):
     return new_forecast2, fore_date, arr_len
 
 def add_foreDay(date1, ix1):
-    day1 = datetime.datetime.now()
+    jst = zoneinfo.ZoneInfo("Asia/Tokyo")
+    day1 = datetime.datetime.now(jst)
     day2 = day1.replace(day=int(date1))
     day3 = day2 + datetime.timedelta(days=ix1)
     date2 = str(day3.day)

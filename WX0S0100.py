@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 import locale
 import math
 import requests
+import zoneinfo
 
 import PK0S0100
 import WX0S0101
@@ -216,7 +217,8 @@ def get_forecast(title, forecast, postCode, kinocd):
     return title, forecast
 
 def get_asas():
-    now_jst = datetime.now()
+    jst = zoneinfo.ZoneInfo("Asia/Tokyo")
+    now_jst = datetime.now(jst)
     now_utc = now_jst + timedelta(hours = -9)
     comp1 = datetime(now_utc.year, now_utc.month, now_utc.day, 23, 30)
     for ix1 in range(8):
