@@ -129,7 +129,7 @@ def get_MetarTaf(fileName, path):
     return metar, taf
 
 def metarTaf_pdf(metartafJpn, metartafEng, warning_flg, fileName, metartaf, ix1, path):
-    GEN_SHIN_GOTHIC_MEDIUM_TTF = "..static/fonts/GenShinGothic-Monospace-Medium.ttf"
+    GEN_SHIN_GOTHIC_MEDIUM_TTF = "../static/fonts/GenShinGothic-Monospace-Medium.ttf"
     if metartaf == 1: #metar
         FILENAME = path + fileName + '_' + str(ix1 + 1) +'.pdf'
         c = canvas.Canvas(FILENAME, pagesize=portrait(A4))
