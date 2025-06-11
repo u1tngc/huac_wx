@@ -27,9 +27,9 @@ def login():
         password = request.form['password']
         if password == USER_DATA['password']:
             session['logged_in'] = True
-            for file_path in glob.glob("/tmp/*.pdf"):
+            for file_path in glob.glob("*.pdf"):
                 os.remove(file_path)
-            for file_path in glob.glob("/tmp/templates/天気概況*.html"):
+            for file_path in glob.glob("templates/天気概況*.html"):
                 os.remove(file_path)
             return redirect(url_for('menu'))
         else:
@@ -70,7 +70,7 @@ def get_wx():
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for ix1 in range(2):
-                    file_path = f"/tmp/{fileNames[ix1]}"
+                    file_path = f"{fileNames[ix1]}"
                     zipf.write(file_path, arcname=fileNames[ix1])
             zip_buffer.seek(0)
             if err_msg == "":
@@ -85,7 +85,7 @@ def get_wx():
 @app.route('/get_gaikyo',methods=['GET', 'POST'])
 def get_gaikyo():
     try:
-        os.remove("/tmp/天気概況.html")
+        os.remove("天気概況.html")
     except FileNotFoundError:
         pass
     err = ""
@@ -108,7 +108,7 @@ def get_gaikyo():
             err = WX1M0100.main(city,2)
             out = city
         if err == "":
-            os.rename('/tmp/天気概況.html',f"/tmp/天気概況_{out}.html")
+            os.rename('天気概況.html',f"天気概況_{out}.html")
             return render_template(f"天気概況_{out}.html")
     return render_template('get_gaikyo.html',err=err)
 
@@ -124,7 +124,7 @@ def get_metartaf():
         taf = request.form['taf']
         fileName,err_msg = WX1M0200.main(shorikbn ,location,metar,taf)
         if err_msg == 0:
-            return send_file(f"/tmp/{fileName}", as_attachment=True, download_name=fileName)
+            return send_file(f"{fileName}", as_attachment=True, download_name=fileName)
         else:
             return render_template(fileName, err_msg=err_msg)
     return render_template('get_metartaf.html')
@@ -143,7 +143,7 @@ def get_metartafs():
         else:
             ret_cd,fileName = WX1M0300.main(shorikbn ,location[0:5], taishoTime)
             if ret_cd == 0:
-                return send_file(f"/tmp/{fileName}", as_attachment=True, download_name=fileName)
+                return send_file(f"{fileName}", as_attachment=True, download_name=fileName)
     return render_template('get_metartafs.html')
 
 #概況
@@ -151,7 +151,7 @@ def get_metartafs():
 def gaikyo():
     file_umu = 0
     err = "エラー：実行してから概況取得してください。"
-    fileName = "/tmp/天気概況*.html"
+    fileName = "天気概況*.html"
     files = glob.glob(fileName)
     if files:
         file_umu = file_umu + 1
