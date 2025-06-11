@@ -242,9 +242,9 @@ def make_bottom():
 
 def convertToPdf(text, nowdate,path):
 
-    with open('/home/ubuntu/huac_wx/huac_wx/templates/天気概況.html', 'w', encoding='utf-8') as file:
+    with open('/tmp/天気概況.html', 'w', encoding='utf-8') as file:
         file.write(text)
-    url = '/home/ubuntu/huac_wx/huac_wx/templates/天気概況.html'
+    url = '/tmp/天気概況.html'
     return url
 
 def remake_forecast(forecast):
