@@ -216,20 +216,26 @@ def get_forecast(title, forecast, postCode, kinocd):
             eof = 1
     return title, forecast
 
+from datetime import datetime, timedelta
+import zoneinfo
+
 def get_asas():
     jst = zoneinfo.ZoneInfo("Asia/Tokyo")
-    now_jst = datetime.now(jst)
-    now_utc = now_jst + timedelta(hours = -9)
-    comp1 = datetime(now_utc.year, now_utc.month, now_utc.day, 23, 30)
+    now_jst = datetime.now(jst)  # JSTの現在時刻
+    now_utc = now_jst.astimezone(zoneinfo.ZoneInfo("UTC"))  # JSTからUTCに変換
+
+    comp1 = datetime(now_utc.year, now_utc.month, now_utc.day, 23, 30, tzinfo=zoneinfo.ZoneInfo("UTC"))
+
     for ix1 in range(8):
-        comp = datetime(now_utc.year, now_utc.month, now_utc.day, 2 + 3 * ix1, 30)
+        comp = datetime(now_utc.year, now_utc.month, now_utc.day, 2 + 3 * ix1, 30, tzinfo=zoneinfo.ZoneInfo("UTC"))
+
         if now_utc < comp:
             if ix1 == 0:
                 comp = comp + timedelta(days=-1)
                 url_year = comp.strftime("%Y")
                 url_month = comp.strftime("%m")
                 url_day = comp.strftime("%d")
-                url_hour = '21'      
+                url_hour = '21'
             else:
                 url_year = now_utc.strftime("%Y")
                 url_month = now_utc.strftime("%m")
@@ -238,17 +244,21 @@ def get_asas():
                 if len(url_hour) == 1:
                     url_hour = '0' + url_hour
             break
+
         if comp1 <= now_utc:
             url_year = comp.strftime("%Y")
             url_month = comp.strftime("%m")
             url_day = comp.strftime("%d")
-            url_hour = '21'  
+            url_hour = '21'
             break
+
     if url_hour == '15':
         url_hour = '12'
-    url1 = str(url_year) + str(url_month)
-    url2 = str(url_year) + str(url_month) + str(url_day) + str(url_hour) + "00"
-    url = "https://www.data.jma.go.jp/fcd/yoho/data/wxchart/quick/" + url1 + "/SPAS_COLOR_" + url2 + ".png"
+
+    url1 = f"{url_year}{url_month}"
+    url2 = f"{url_year}{url_month}{url_day}{url_hour}00"
+    url = f"https://www.data.jma.go.jp/fcd/yoho/data/wxchart/quick/{url1}/SPAS_COLOR_{url2}.png"
+    
     return url
 
 def get_wxJson(flg, postCode):
