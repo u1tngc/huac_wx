@@ -65,7 +65,7 @@ def get_wx():
         shorikbn = request.form['purpose']
         fileNames, err_msg,html_name = WX1M0000.kyotsu_shori(shorikbn ,location[0:4])
         if shorikbn == "1":
-            return send_file(f"/tmp/{fileNames[0]}", as_attachment=True, download_name=fileNames[0])
+            return send_file(f"{fileNames[0]}", as_attachment=True, download_name=fileNames[0])
         else:
             zip_buffer = io.BytesIO()
             with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
