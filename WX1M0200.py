@@ -94,7 +94,7 @@ def main(selected_option,airport,metar,taf):
     output ="METAR・TAF翻訳結果.pdf"
     if selected_option == "取得・翻訳":
         err_msg, output = get_and_transtale(airport)
-        for file_path in glob.glob("/tmp/MetarTaf*.pdf"):
+        for file_path in glob.glob("MetarTaf*.pdf"):
             os.rename(file_path,output)
     elif selected_option == "翻訳":
         mt = 0
@@ -119,7 +119,7 @@ def main(selected_option,airport,metar,taf):
             merger.write(output)
             merger.close()
         elif mt == 1:
-            os.rename("/tmp/Metar.pdf", output)
+            os.rename("Metar.pdf", output)
         elif mt == 1.5:
-            os.rename("/tmp/Taf.pdf", output)
+            os.rename("Taf.pdf", output)
     return output, err_msg
