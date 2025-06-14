@@ -43,21 +43,22 @@ def kyotsu_shori(shoriKbn, mt_location):
         try:
             if mt_location == "":
                 fileName_MetarTaf.append(get_MetarTaf("RJTY"))
-                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "/tmp/")
+                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
             else:
                 fileName_MetarTaf.append(get_MetarTaf("RJTY"))
-                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "/tmp/")
+                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
                 time.sleep(2)
                 fileName_MetarTaf.append(get_MetarTaf(mt_location))
                 if fileName_MetarTaf[1] == "":
                     metar_flg = 2
                 else:
-                    retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[1], "/tmp/")
+                    retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[1], "")
                 try:
                     os.rename('Metar.pdf', f"MetarTaf_{fileName_MetarTaf[1]}.pdf")
                 except FileNotFoundError:
                     pass
-        except:
+        except Exception as e:
+            print(f"Error fetching METAR/TAF data: {e}")
             metar_flg = 0
         blip = get_blipmap()
         html_name = WX0S0100.getWx(shoriKbn, "360-0222,JP", WX1M0000.nowdatetime,"2")
