@@ -414,9 +414,9 @@ def readMetar(metar):
                     metarEng.append(metarInfo[ix1])
                     warning_flg.append(0)
             #雲
-                elif metarInfo[ix1] in rmk_cloud_array:
-                    rmk_c_f = rmk_cloud_array[metarInfo[ix1]]
-                    rmk_c_t = rmk_cloud_array[metarInfo[ix1 + 2]]
+                elif metarInfo[ix1][0:3] in rmk_cloud_array:
+                    rmk_c_f = rmk_cloud_array[metarInfo[ix1][0:3]]
+                    rmk_c_t = rmk_cloud_array[metarInfo[ix1 + 2][0:3]]
                     metarRet.append(f"雲    量：{rmk_c_f}から{rmk_c_t}へ変動")
                     metarEng.append(f"{metarInfo[ix1]} {metarInfo[ix1 + 1]} {metarInfo[ix1 + 2]}")
                     warning_flg.append(0) 
