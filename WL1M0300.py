@@ -10,7 +10,7 @@ import time
 from flask import flash
 import zoneinfo
 
-import WX0S0200
+import WL0S0200
 
 class WX1M0300:
     jts = zoneinfo.ZoneInfo("Asia/Tokyo")
@@ -29,7 +29,7 @@ def get_and_transtale(inp_location,hour,shori_kbn):
         retCD = 1
         output = ""
     else:
-        retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf, "")
+        retCD = WL0S0200.translate_MetarTaf(fileName_MetarTaf, "")
         os.remove('MetarTaf_' + fileName_MetarTaf + '.txt')
         try:
             if shori_kbn == 1 or shori_kbn == 11:
@@ -86,7 +86,7 @@ def get_MetarTaf(inp_location,inp_hour,shori_kbn):
 
 # metar tafをtxtファイルから読み込む
 def translate(fileName):
-    retCD = WX0S0200.translate_MetarTaf(fileName, "")
+    retCD = WL0S0200.translate_MetarTaf(fileName, "")
     return retCD
 
 def file_empty(file_path):

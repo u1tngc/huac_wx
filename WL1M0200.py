@@ -9,7 +9,7 @@ from pypdf import PdfWriter
 import glob
 import zoneinfo
 
-import WX0S0200
+import WL0S0200
 
 
 def get_and_transtale(inp_location):
@@ -19,7 +19,7 @@ def get_and_transtale(inp_location):
     if fileName_MetarTaf == "":
         retCD = 1
     else:
-        retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf, "")
+        retCD = WL0S0200.translate_MetarTaf(fileName_MetarTaf, "")
         os.remove('MetarTaf_' + fileName_MetarTaf + '.txt')
         try:
             os.rename("Metar.pdf",'Metar_' + fileName_MetarTaf + '.pdf')
@@ -75,7 +75,7 @@ def get_MetarTaf(inp_location):
 
 # metar tafをtxtファイルから読み込む
 def translate(filename):
-    retCD = WX0S0200.translate_MetarTaf(filename, "")
+    retCD = WL0S0200.translate_MetarTaf(filename, "")
     return retCD
 
 

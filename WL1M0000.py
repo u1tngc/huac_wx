@@ -10,10 +10,10 @@ import requests
 import time
 import zoneinfo
 
-import WX0S0100
-import WX0S0200
-import WX1S0001
-import WX1S0002
+#import WL0S0100
+import WL0S0200
+import WL1S0001
+import WL1S0002
 
 class WX1M0000:
     jst = zoneinfo.ZoneInfo("Asia/Tokyo")
@@ -29,30 +29,30 @@ def kyotsu_shori(shoriKbn, mt_location):
         if shoriKbn == "1":
             fileName = [""] * 7
             #地上天気図・過去→現在→予報を取得
-            fileName = WX1S0002.get_asas(currentDateTime, fileName, WX1M0000.nowdatetime)
+            fileName = WL1S0002.get_asas(currentDateTime, fileName, WX1M0000.nowdatetime)
             #高層天気図850/700/500/300を取得（最新版）
-            fileName = WX1S0002.get_kosou(timeKbn, fileName, WX1M0000.nowdatetime)
+            fileName = WL1S0002.get_kosou(timeKbn, fileName, WX1M0000.nowdatetime)
             #短期予報解説資料
-            fileName = WX1S0002.get_tanki(fileName, WX1M0000.nowdatetime)
+            fileName = WL1S0002.get_tanki(fileName, WX1M0000.nowdatetime)
         elif shoriKbn == "2":
             fileName = [""] * 15
-            fileName = WX1S0001.get_kyosho(timeKbn, currentDateTime, fileName, WX1M0000.nowdatetime)
+            fileName = WL1S0001.get_kyosho(timeKbn, currentDateTime, fileName, WX1M0000.nowdatetime)
             out_file[1] = get_DOC(currentDateTime)
         metar_flg = 1
         fileName_MetarTaf = []
         try:
             if mt_location == "":
                 fileName_MetarTaf.append(get_MetarTaf("RJTY"))
-                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
+                retCD = WL0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
             else:
                 fileName_MetarTaf.append(get_MetarTaf("RJTY"))
-                retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
+                retCD = WL0S0200.translate_MetarTaf(fileName_MetarTaf[0], "")
                 time.sleep(2)
                 fileName_MetarTaf.append(get_MetarTaf(mt_location))
                 if fileName_MetarTaf[1] == "":
                     metar_flg = 2
                 else:
-                    retCD = WX0S0200.translate_MetarTaf(fileName_MetarTaf[1], "")
+                    retCD = WL0S0200.translate_MetarTaf(fileName_MetarTaf[1], "")
                 try:
                     os.rename('Metar.pdf', f"MetarTaf_{fileName_MetarTaf[1]}.pdf")
                 except FileNotFoundError:
@@ -61,7 +61,7 @@ def kyotsu_shori(shoriKbn, mt_location):
             print(f"Error fetching METAR/TAF data: {e}")
             metar_flg = 0
         blip = get_blipmap()
-        html_name = WX0S0100.getWx(shoriKbn, "360-0222,JP", WX1M0000.nowdatetime,"2")
+        #html_name = WL0S0100.getWx(shoriKbn, "360-0222,JP", WX1M0000.nowdatetime,"2")
         out_file[0] = append_pdf(fileName_MetarTaf, fileName, blip, metar_flg)
         if shoriKbn == "2": 
             rotatePDF()
@@ -75,7 +75,8 @@ def kyotsu_shori(shoriKbn, mt_location):
             err_msg = ""
         else:
             err_msg = ""
-    return out_file, err_msg, html_name
+    return out_file, err_msg
+    #return out_file, err_msg, html_name
 
 def get_time():
     currentTimeUnix = time.time()
