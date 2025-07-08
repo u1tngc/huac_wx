@@ -111,6 +111,11 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
                     pirep_d_jp = str(pirep_d_m) + "m"
                 ix2 = ix2 + 1
                 pirep_d_flg = 1
+            elif metarInfo[ix2][-2:] == "KM":
+                pirep_d_jp = metarInfo[ix2]
+                ix2 = ix2 + 1
+                pirep_d_flg = 1
+
             if check_direction(metarInfo[ix2],1): #方角
                 pirep_v_eg = metarInfo[ix2]
                 pirep_v_jp = check_direction(metarInfo[ix2],2)

@@ -193,6 +193,7 @@ def readMetar(metar):
     eof_flg = 0
     cloud_num = 1
     if metarInfo[ix1] != 'CAVOK':
+
         while eof_flg == 0:
             if metarInfo[ix1][0:2] == 'VV':
                 if metarInfo[ix1][2:5] == "///":

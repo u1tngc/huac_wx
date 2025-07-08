@@ -33,6 +33,8 @@ def checkWarning(warning_flg, info):
                 vis_sm = int(vis[0:1])
             elif vis[2:4] == "SM": #99SM
                 vis_sm = int(vis[0:2])
+            elif vis[2:3] == "/" and vis[4:6] == "SM":
+                vis_sm = int(vis[0:1]) + int(vis[1:2]) / int(vis[3:4])
             elif vis[5:7] == "SM": #9 9/9SM
                 vis_sm = int(vis[0:1]) + (int(vis[2:3]) / int(vis[4:5]))
             elif vis[3:5] == "SM": #9/9SM

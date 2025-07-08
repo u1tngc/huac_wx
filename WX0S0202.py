@@ -409,9 +409,12 @@ def readTaf(taf):
 
   #QNH気圧
         elif tafInfo[ix1][0:3] == 'QNH':
-            qnh_in = int(tafInfo[ix1][3:7]) / 100
-            qnh_hpa = PK0S0100.inHg_to_hPa(qnh_in)
-            tafStr = 'ＱＮＨ気圧：' + str(qnh_in) + 'inHg（' + str(qnh_hpa) + 'hPa）'
+            if tafInfo[ix1] != "QNHINS":
+                qnh_in = int(tafInfo[ix1][3:7]) / 100
+                qnh_hpa = PK0S0100.inHg_to_hPa(qnh_in)
+                tafStr = 'ＱＮＨ気圧：' + str(qnh_in) + 'inHg（' + str(qnh_hpa) + 'hPa）'
+            else:
+                tafStr = 'ＱＮＨ気圧：不明'
             tafRet ,tafEng, warning_flg = appendList(tafRet, tafEng, warning_flg, tafStr, tafInfo[ix1], 0)
   #fm
         elif tafInfo[ix1] == "FM":

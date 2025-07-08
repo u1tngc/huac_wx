@@ -245,7 +245,7 @@ def readMetar(metar):
                     c_vis_m = PK0S0100.ft_to_m(c_vis_ft)
                     cloudInfo = "垂直視程：" + str(c_vis_ft) + "ft(" + str(c_vis_m) + ")m"
                     warning_flg.append(3)
-                metarRet.append(skyClear)
+                metarRet.append(cloudInfo)
                 metarEng.append(metarInfo[ix1])
                 ix1 = ix1 + 1
             else:
@@ -468,13 +468,21 @@ def readMetar(metar):
                 elif metarInfo[ix1][0:1] == 'P' and len(metarInfo[ix1]) == 5 and metarInfo[ix1][3:4] != 'V' and metarInfo[ix1] != "PWINO":
                     if metarInfo[ix1][1:5] == '////':
                         rainH_info = "時間降水量：不明"
+                        rain_flg = 0
                     else:
                         rainHInch = round(int(metarInfo[ix1][1:5]) / 100, 2)
                         rainHMm = PK0S0100.inch_to_mm(rainHInch)
                         rainH_info = "時間降水量：" + str(rainHInch) + 'inch（' + str(rainHMm) + 'mm）'
+                        if metarInfo[ix1][1:5] == "0000":
+                            rain_flg = 0
+                        else:
+                            rain_flg = 1
                     metarRet.append(rainH_info)   
-                    metarEng.append(metarInfo[ix1])    
-                    warning_flg.append(11)        
+                    metarEng.append(metarInfo[ix1])  
+                    if rain_flg == 0:
+                        warning_flg.append(0)  
+                    else:
+                        warning_flg.append(11)        
 
             #1最高気温
                 elif metarInfo[ix1][0:1] == '1' and len(metarInfo[ix1]) == 5 and metarInfo[ix1][3:4] != 'V':
@@ -525,26 +533,33 @@ def readMetar(metar):
                     warning_flg.append(0)
 
             #4最高気温・最低気温
-                elif metarInfo[ix1][0:1] == '4' and len(metarInfo[ix1]) == 9:
-                    if metarInfo[ix1][1:2] == '/':
+                elif metarInfo[ix1][0:1] == '4' and (len(metarInfo[ix1]) == 9 or len(metarInfo[ix1]) == 5):
+                    if metarInfo[ix1][1:2] == '/' or len(metarInfo[ix1]) == 5:
                         temp_max4_info = '最高気温：不明'
                         temp_min4_info = '最低気温：不明'
-                    elif metarInfo[ix1][1:2] == '1':
-                        temp_max4 = round((0 - (int(metarInfo[ix1][2:5]) / 10)), 1)
+                        metarRet.append(temp_max4_info)
+                        metarEng.append(metarInfo[ix1])
+                        metarRet.append(temp_min4_info)
+                        metarEng.append(metarInfo[ix1])
+                        warning_flg.append(0)
+                        warning_flg.append(0)
                     else:
-                        temp_max4 = round((float(metarInfo[ix1][2:5]) / 10), 1)
-                    if metarInfo[ix1][5:6] == '1':
-                        temp_min4 = round((0 - (float(metarInfo[ix1][6:9]) / 10)), 1)
-                    else:
-                        temp_min4 = round((float(metarInfo[ix1][6:9]) / 10), 1)
-                    temp_max4_info = '最高気温：' + str(temp_max4) + '℃'
-                    temp_min4_info = '最低気温：' + str(temp_min4) + '℃'
-                    metarRet.append(temp_max4_info)
-                    metarEng.append(metarInfo[ix1])
-                    metarRet.append(temp_min4_info)
-                    metarEng.append(metarInfo[ix1])
-                    warning_flg.append(0)
-                    warning_flg.append(0)
+                        if metarInfo[ix1][1:2] == '1':
+                            temp_max4 = round((0 - (int(metarInfo[ix1][2:5]) / 10)), 1)
+                        else:
+                            temp_max4 = round((float(metarInfo[ix1][2:5]) / 10), 1)
+                        if metarInfo[ix1][5:6] == '1':
+                            temp_min4 = round((0 - (float(metarInfo[ix1][6:9]) / 10)), 1)
+                        else:
+                            temp_min4 = round((float(metarInfo[ix1][6:9]) / 10), 1)
+                        temp_max4_info = '最高気温：' + str(temp_max4) + '℃'
+                        temp_min4_info = '最低気温：' + str(temp_min4) + '℃'
+                        metarRet.append(temp_max4_info)
+                        metarEng.append(metarInfo[ix1])
+                        metarRet.append(temp_min4_info)
+                        metarEng.append(metarInfo[ix1])
+                        warning_flg.append(0)
+                        warning_flg.append(0)
 
             #4積雪量
                 elif metarInfo[ix1][0:1] == '4' and len(metarInfo[ix1]) == 5 and metarInfo[ix1][3:4] != 'V':
@@ -758,7 +773,9 @@ def readMetar(metar):
                         rmk_vis_value_sm = rmk_vis_value_sm + int(rmk_vis_temp[0]) / int(rmk_vis_temp[1])
                         rmk_vis_value_m = PK0S0100.statueMile_to_m(rmk_vis_value_sm)
                         rmk_vis_ret = f"  視程：{str(rmk_vis_value_sm)}マイル({str(rmk_vis_value_m)}m)"
-                        rmk_vis_eng = rmk_vis_eng + metarInfo[ix1]
+                        rmk_vis_eng = rmk_vis_eng +  metarInfo[ix1]
+                        if len(rmk_vis_eng) not in [1,2,3]:
+                            rmk_vis_eng = f"{rmk_vis_eng[0:1]} {rmk_vis_eng[1:]}"
                     metarRet.append(rmk_vis_ret)
                     metarEng.append(rmk_vis_eng)
                     warning_flg.append(5)   
@@ -779,7 +796,7 @@ def readMetar(metar):
                     warning_flg.append(0)
                     ix1 = ix1 + 2
                 
-                elif (metarInfo[ix1] == "ALSTG/SLP" or metarInfo[ix1] == "ALSTG") and metarInfo[ix1 + 1] == "ESTMD":
+                elif (metarInfo[ix1] == "ALSTG/SLP" or metarInfo[ix1] == "ALSTG" or metarInfo[ix1] == "SLP/ALSTG") and metarInfo[ix1 + 1] == "ESTMD":
                     metarRet.append("気圧情報：機器不調のため推定値")
                     metarEng.append(metarInfo[ix1] + " " + metarInfo[ix1+1]) 
                     warning_flg.append(0)
@@ -884,9 +901,9 @@ def check_LTG_direct(info,kino_code):
         flg = 1
         if info[1:2] == "-" or info[2:3] == "-":
             if info[1:2] == "-":
-                direct_info = info[1:2]
+                direct_info = info[0:1]
             elif info[2:3] == "-":
-                direct_info = info[2:3]
+                direct_info = info[0:2]
             for ix1 in range(len(direct)):
                 if direct[ix1] == direct_info:
                     flg = 3
