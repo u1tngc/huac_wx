@@ -54,7 +54,7 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
             if metarInfo[ix2 + 1] == "TO":
                 pirep_strength_jp = strength[metarInfo[ix2]]
                 pirep_strength_jp = pirep_strength_jp + "から" + strength[metarInfo[ix2 + 2]] + "程度"
-                pirep_strength_eg = metarInfo[ix2] + " " + metarInfo[ix2 + 1] + metarInfo[ix2 + 1] 
+                pirep_strength_eg = metarInfo[ix2] + " " + metarInfo[ix2 + 1] + metarInfo[ix2 + 2] 
                 ix2 = ix2 + 3
             else:
                 pirep_strength_jp = strength[metarInfo[ix2]] + "程度"
