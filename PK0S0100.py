@@ -1,5 +1,6 @@
 #PGM-ID:PK0S0100
 #PGM-NAME:[P]単位換算
+#最終更新日:
 
 import calendar
 import datetime
