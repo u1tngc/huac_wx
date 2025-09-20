@@ -1,5 +1,6 @@
-#PGM-ID:WX1M0300
-#PGM-NAME:WXメタタフ一括取得翻訳メイン
+#PGM-ID:WL1M0300
+#PGM-NAME:WLメタタフ一括取得翻訳メイン
+#最終更新日:
 
 import datetime
 import os
@@ -61,9 +62,9 @@ def get_and_transtale(inp_location,hour,shori_kbn):
 
 def get_MetarTaf(inp_location,inp_hour,shori_kbn):
     if shori_kbn == 1:
-        url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={inp_location}&hours={inp_hour}&order=id%2C-obs&sep=true'
+        url = f'https://aviationweather.gov/api/data/metar?ids={inp_location}&format=raw&hours={inp_hour}'
     elif shori_kbn == 2:
-        url = f'https://aviationweather.gov/api/data/taf?ids={inp_location}&format=raw&hours={inp_hour}&%20Server%20response'
+        url = f'https://aviationweather.gov/api/data/taf?ids={inp_location}&format=raw&hours={inp_hour}'
     try:
         response = requests.get(url, timeout=7)
         file_name = inp_location + "_" + str(WX1M0300.filename1)

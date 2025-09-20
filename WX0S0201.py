@@ -25,7 +25,15 @@ def readMetar(metar):
             warning_info = [0] * len(metarRet)
             return metarRet, metarEng, warning_info
     ix1 = 0
-
+  #通報種類判定
+    if metarInfo[ix1] == "METAR":
+        kind = "METAR(定時飛行場実況気象通報式)"
+    elif metarInfo[ix1]  == "SPECI":
+        kind = "SPECI(特別飛行場実況気象通報式)"
+    metarRet.append(f"通報種類：{kind}") 
+    metarEng.append(metarInfo[ix1])
+    warning_flg.append(0)
+    ix1 = ix1 + 1
   #地点略号
     location = WX0S0207.get_location(metarInfo[ix1])
     metarRet.append(f"地点略号：{location}") 

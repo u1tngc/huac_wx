@@ -1,5 +1,6 @@
-#PGM-ID:WX1M0200
-#PGM-NAME:WXメタタフ取得翻訳メイン
+#PGM-ID:WL1M0200
+#PGM-NAME:WLメタタフ取得翻訳メイン
+#最終更新日:
 
 import datetime
 import os
@@ -30,7 +31,7 @@ def get_and_transtale(inp_location):
 
 
 def get_MetarTaf(inp_location):
-    url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={inp_location}&hours=1&order=id%2C-obs&sep=true&taf=true'
+    url = f'https://aviationweather.gov/api/data/metar?ids={inp_location}&format=raw&taf=true'
     try:
         response = requests.get(url, timeout=7)
         jst = zoneinfo.ZoneInfo("Asia/Tokyo")
@@ -53,7 +54,7 @@ def get_MetarTaf(inp_location):
                     mt_hour_str, mt_hour_2 = str(mt_hour).split(".")
                 else:
                     mt_hour_str = str(mt_hour)
-                url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={inp_location}&hours={mt_hour_str}&order=id%2C-obs&sep=true&taf=true'
+                url = f'https://aviationweather.gov/api/data/metar?ids={inp_location}&format=raw&taf=true&hours={mt_hour_str}'
                 response = requests.get(url, timeout=7)
                 with open(file_path, "wb") as file:
                     for chunk in response.iter_content(200000):

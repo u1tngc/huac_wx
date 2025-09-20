@@ -1,5 +1,6 @@
-#PGM-ID:WX0S0200
-#PGM-NAME:[P]WXメタタフ取得
+#PGM-ID:WL0S0200
+#PGM-NAME:WLメタタフ取得
+#最終更新日:
 
 import os
 from pypdf import PdfWriter
@@ -106,26 +107,41 @@ def get_MetarTaf(fileName, path):
         record = f.readlines()
 
     for ix1 in range(len(record)):
-        if len(record[ix1].rstrip()) != 0:        
-            if record[ix1][0:3] == 'TAF':
-                tafFlg = 1
-            if tafFlg == 1:
-                taf_all.append(record[ix1].rstrip())
-            else:
-                metar.append(record[ix1].rstrip())
-    for ix1 in range(len(taf_all)):
-        if ix1 == 0:
-            dummy = []
-            dummy.append(taf_all[ix1])
+        if record[ix1][0:5] in ["METAR", "SPECI"]:
+            metar.append(record[ix1].replace("\n",""))
         else:
-            if taf_all[ix1][0:3] == "TAF":
-                taf.append(dummy)
-                dummy = []
-                dummy.append(taf_all[ix1])
+            taf_all.append(record[ix1])
+            tafFlg = 1
+    if tafFlg == 1:
+        taf_wk1 = []
+        taf_wk2 = []
+        for ix1 in range(len(taf_all)):
+            taf_str = taf_all[ix1].replace("\n","")
+            if ix1 == 0:
+                taf_wk1.append(taf_str)
             else:
-                dummy.append(taf_all[ix1])
-    if len(taf_all) != 0:
-        taf.append(dummy)
+                if taf_str[0:3] == "TAF":
+                    taf_wk2.append(taf_wk1)
+                    taf_wk1 = []
+                    taf_wk1.append(taf_str)
+                else:
+                    taf_wk1.append(taf_str)
+        taf_wk2.append(taf_wk1)
+        if len(taf_wk2) == 1:
+            taf = taf_wk2
+        else:
+            drop_array = []
+            for ix1 in range(len(taf_wk2)):
+                if taf_wk2[ix1] == taf_wk2[ix1 + 1]:
+                    drop_array.append(ix1 + 1)
+                if ix1 + 1 == len(taf_wk2) - 1:
+                    break
+            if drop_array:
+                for ix1 in range(len(taf_wk2)):
+                    if ix1 not in drop_array:
+                        taf.append(taf_wk2[ix1])
+            else:
+                taf = taf_wk2
     return metar, taf
 
 def metarTaf_pdf(metartafJpn, metartafEng, warning_flg, fileName, metartaf, ix1, path):

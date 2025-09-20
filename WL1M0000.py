@@ -1,5 +1,6 @@
-#PGM-ID:WX1M0000
-#PGM-NAME:WX資料取得メイン
+#PGM-ID:WL1M0000
+#PGM-NAME:WL資料取得メイン
+#最終更新日:
 
 import datetime
 import os
@@ -115,7 +116,7 @@ def timeCheck(currentDateTime,kino_cd):
         return timeKbn
 
 def get_MetarTaf(location):
-    url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&hours=1&order=id%2C-obs&sep=true&taf=true'
+    url = f'https://aviationweather.gov/api/data/metar?ids={location}&format=raw&taf=true'
     response = requests.get(url)
     file_name = f"{location}_x"
     file_path = f"MetarTaf_{file_name}.txt"
@@ -134,7 +135,7 @@ def get_MetarTaf(location):
                 mt_hour_str, mt_hour_2 = str(mt_hour).split(".")
             else:
                 mt_hour_str = str(mt_hour)
-            url = f'https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&hours={mt_hour_str}&order=id%2C-obs&sep=true&taf=true'
+            url = f'https://aviationweather.gov/api/data/metar?ids={location}&format=raw&taf=true&hours={mt_hour_str}'
             response = requests.get(url, timeout=7)
             with open(file_path, "wb") as file:
                 for chunk in response.iter_content(200000):

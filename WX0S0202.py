@@ -11,6 +11,7 @@ def readTaf(taf):
     tafEng = []
     warning_flg = []
     ix1 = 0
+    """
     for ix3 in range(len(taf)):
         if ix3 == 0:
             tafInfo = taf[ix3].split()
@@ -19,6 +20,7 @@ def readTaf(taf):
             tafInfox = taf[ix3].split()
             for ix2 in range(len(tafInfox)):
                 tafInfo.append(tafInfox[ix2])
+    """
     tafInfo.append("$")
   #初期処理
     num_array = [1,1,1,1] #雲,乱気流,アイシング,wx
