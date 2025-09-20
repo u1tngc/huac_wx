@@ -24,7 +24,7 @@ def translate_MetarTaf(fileName, path):
     metar, taf = get_MetarTaf(str(fileName), path)
     if len(metar) != 0:
         for ix1 in range(len(metar)):
-            if metar[ix1][0:4] in metar_US:
+            if metar[ix1][6:10] in metar_US:
                 metarJpn, metarEng, warning_flg = WX0S0201.readMetar(metar[ix1])
             else:
                 metarJpn, metarEng, warning_flg = WX0S0205.readMetar(metar[ix1])
