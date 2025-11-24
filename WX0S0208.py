@@ -54,7 +54,7 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
             if metarInfo[ix2 + 1] == "TO":
                 pirep_strength_jp = strength[metarInfo[ix2]]
                 pirep_strength_jp = pirep_strength_jp + "から" + strength[metarInfo[ix2 + 2]] + "程度"
-                pirep_strength_eg = metarInfo[ix2] + " " + metarInfo[ix2 + 1] + metarInfo[ix2 + 2] 
+                pirep_strength_eg = f"{metarInfo[ix2]} {metarInfo[ix2 + 1]} {metarInfo[ix2 + 2]} "
                 ix2 = ix2 + 3
             else:
                 pirep_strength_jp = strength[metarInfo[ix2]] + "程度"
@@ -301,7 +301,7 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
                     else:
                         pirep_distance_km = int(metarInfo[ix2][:-2])
                         pirep_distance_jp = f"{round(pirep_distance_km)}km"
-                if len(metarInfo[ix2 + 1]) >= 3:
+                if len(metarInfo[ix2 + 1]) >= 3 and metarInfo[ix2 + 1] != "UNKNOWN":
                     pirep_direct_f1, pirep_direct_f2 = metarInfo[ix2 + 1].split("-")
                     pirep_direct_f1_jp = check_direction(pirep_direct_f1, 2)
                     pirep_direct_f2_jp = check_direction(pirep_direct_f2, 2)
@@ -388,7 +388,8 @@ def check_direction(input_d, kino_cd):
         "S": "南",
         "SW": "南西",
         "W": "西",
-        "NW": "北西"
+        "NW": "北西",
+        "UNKNOWN" : "（方角不明）"
     }
     if input_d in direction_list:
         if kino_cd == 1:

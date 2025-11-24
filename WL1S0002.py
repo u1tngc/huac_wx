@@ -1,5 +1,6 @@
-#PGM-ID:WX1S0002
-#PGM-NAME:WX自家用取得
+#PGM-ID:WL1S0002
+#PGM-NAME:WL自家用取得
+#最終更新日:
 
 
 import datetime

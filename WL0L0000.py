@@ -1,5 +1,6 @@
-#PGM-ID:WX0L0000
-#PGM-NAME:WXウェブメイン
+#PGM-ID:WL0L0000
+#PGM-NAME:WLウェブメイン
+#最終更新日:2025/06/14
 
 from flask import Flask, render_template, request, redirect, url_for, session, send_file, flash
 import os

@@ -1,5 +1,6 @@
-#PGM-ID:WX1S0001
-#PGM-NAME:WX教証資料取得
+#PGM-ID:WL1S0001
+#PGM-NAME:WL教証資料取得
+#最終更新日:
 
 import datetime
 import os
@@ -134,11 +135,11 @@ def get_kyosho_kousou(timeKbn, currentDate, fileName,temp_file):
             hh_num = 0
             mm_num = 30
         except requests.exceptions.HTTPError:
-            if mm_num == 58:
+            if mm_num == 59:
                 mm_num = 0
                 hh_num += 1
             else:
-                mm_num += 2
+                mm_num += 1
 
     url_50 = 'https://www.jma.go.jp/bosai/numericmap/data/nwpmap/auxn50_12.pdf'
     response = requests.get(url_50)

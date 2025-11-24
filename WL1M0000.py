@@ -249,10 +249,23 @@ def get_DOC(currentDateTime: datetime):
         merger.append(f"fefx_{str(ix1)}.pdf")
     merger.append("aupa20.pdf")
 
+    if timeKbn == 9:
+        time_fxjp854 = "00"
+    else:
+        time_fxjp854 = "12"
+    url_fxjp854 = f"https://www.jma.go.jp/bosai/numericmap/data/nwpmap/fxjp854_{time_fxjp854}.pdf"
+    response = requests.get(url_fxjp854, timeout = 10)
+    file = open("fxjp854.pdf","wb")  
+    for chunk in response.iter_content(200000):
+        file.write(chunk)    
+    file.close() 
+    merger.append("fxjp854.pdf")
+
     merger.write('wx予報支援資料_' + WX1M0000.nowdatetime + '.pdf')
     merger.close()
     os.remove("短期予報解説資料.pdf")
     os.remove("週間天気予報解説資料.pdf")
+    os.remove("fxjp854.pdf")
     for ix1 in range(3):
         os.remove(f"fefx_{str(ix1)}.pdf")
     os.remove("aupa20.pdf")

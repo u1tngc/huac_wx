@@ -1,5 +1,6 @@
 #PGM-ID:WX0S0205
 #PGM-NAME:[P]WX欧式METAR
+#最終更新日:2025/10/19
 
 import re
 
@@ -542,6 +543,13 @@ def get_rmk(metarInfo, metarRet, metarEng, warning_flg, ix1):
             elif metarInfo[ix1][0:3] == "QFE":
                 qfeInfo = 'QFE気圧 ：' + metarInfo[ix1][3:] + 'hPa'
                 metarRet.append(qfeInfo)
+                metarEng.append(metarInfo[ix1])
+                warning_flg.append(0)
+            
+        #降水開始
+            elif metarInfo[ix1][0:2] == "RI" and len(metarInfo[ix1]) == 5:
+                rain_start = f"降水開始：{str(int(metarInfo[ix1][2:]))}分前から降水現象を観測"
+                metarRet.append(rain_start)
                 metarEng.append(metarInfo[ix1])
                 warning_flg.append(0)
 
