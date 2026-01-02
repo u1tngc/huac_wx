@@ -1,6 +1,6 @@
 #PGM-ID:WX0S0205
 #PGM-NAME:[P]WX欧式METAR
-#最終更新日:2025/10/19
+#最終更新日:2026/01/02
 
 import re
 
@@ -157,7 +157,11 @@ def readMetar(metar):
             warning_flg.append(4)
         ix1 = ix1 + 1
     except ValueError:
-        pass
+        if metarInfo[ix1] == "////":
+            metarRet.append("視    程：不明")
+            metarEng.append(metarInfo[ix1])
+            warning_flg.append(0)
+            ix1 = ix1 + 1
 
   #滑走路視距離
     rvr_eof = 0
@@ -185,71 +189,82 @@ def readMetar(metar):
     eof_flg = 0
     wx_num = 1
     if metarInfo[ix1] != 'CAVOK':
-        while eof_flg == 0:
-            if metarInfo[ix1] == 'NSC' or metarInfo[ix1] == 'NSD' or metarInfo[ix1] == 'CLR' or metarInfo[ix1] == 'SKC':
-                eof_flg = 1
-            else:
-                metarInfo_wx, retCd= WX0S0207.check_wx(wx_num, metarInfo[ix1])
-                if retCd == 0:
+        if metarInfo[ix1] == '//':
+            metarRet.append("現在天気：不明")
+            metarEng.append(metarInfo[ix1])
+            warning_flg.append(0)
+            ix1 = ix1 + 1
+        else:
+            while eof_flg == 0:
+                if metarInfo[ix1] == 'NSC' or metarInfo[ix1] == 'NSD' or metarInfo[ix1] == 'CLR' or metarInfo[ix1] == 'SKC':
                     eof_flg = 1
-                else: 
-                    metarRet.append(metarInfo_wx)
-                    metarEng.append(metarInfo[ix1])
-                    warning_flg.append(10)
-                    wx_num = wx_num + 1
-                    ix1 = ix1 + 1
+                else:
+                    metarInfo_wx, retCd= WX0S0207.check_wx(wx_num, metarInfo[ix1])
+                    if retCd == 0:
+                        eof_flg = 1
+                    else: 
+                        metarRet.append(metarInfo_wx)
+                        metarEng.append(metarInfo[ix1])
+                        warning_flg.append(10)
+                        wx_num = wx_num + 1
+                        ix1 = ix1 + 1
     
   #雲
     eof_flg = 0
     cloud_num = 1
     if metarInfo[ix1] != 'CAVOK':
-
-        while eof_flg == 0:
-            if metarInfo[ix1][0:2] == 'VV':
-                if metarInfo[ix1][2:5] == "///":
-                    cloudInfo = "垂直視程：不明"
-                    warning_flg.append(0)
-                else:
-                    c_vis_ft = int(metarInfo[ix1][2:5]) * 100
-                    c_vis_m = PK0S0100.ft_to_m(c_vis_ft)
-                    cloudInfo = "垂直視程：" + str(c_vis_ft) + "ft(" + str(c_vis_m) + ")m"
-                    warning_flg.append(3)
-                metarRet.append(cloudInfo)
-                metarEng.append(metarInfo[ix1])
-                ix1 = ix1 + 1
-            else:
-                num_slash = 0
-                for ix10 in range(len(metarInfo[ix1]) + 1):
-                    if metarInfo[ix1][ix10: ix10 + 1] == "/":
-                        num_slash = num_slash + 1
-                if num_slash == 1:
-                    eof_flg = 1
-                else:
-                    if metarInfo[ix1] == 'NSC' or metarInfo[ix1] == 'NCD' or metarInfo[ix1] == 'CLR' or metarInfo[ix1] == 'SKC':
-                        skyClear = '雲情報  ：雲無し'
-                        metarRet.append(skyClear)
-                        metarEng.append(metarInfo[ix1])
+        if metarInfo[ix1] == "//////":
+            metarRet.append("雲情報  ：不明")
+            metarEng.append(metarInfo[ix1])
+            warning_flg.append(0)
+            ix1 = ix1 + 1
+        else:
+            while eof_flg == 0:
+                if metarInfo[ix1][0:2] == 'VV':
+                    if metarInfo[ix1][2:5] == "///":
+                        cloudInfo = "垂直視程：不明"
                         warning_flg.append(0)
-                        ix1 = ix1 + 1
-                    else:    
-                        cloud_amount = metarInfo[ix1][0:3]
-                        cloud_base =  metarInfo[ix1][3:6]
-                        try:
-                            dummy = int(cloud_base)
-                        except ValueError:
-                            if cloud_base != "///":
-                                eof_flg = 1
-                        if eof_flg == 0:
-                            if len(metarInfo[ix1]) > 6:
-                                cloud_kind = metarInfo[ix1][6:]
-                            else:
-                                cloud_kind = ""
-                            cloudInfo = WX0S0207.get_cloudInfo(cloud_amount, cloud_base, cloud_kind, cloud_num)
-                            metarRet.append(cloudInfo)
+                    else:
+                        c_vis_ft = int(metarInfo[ix1][2:5]) * 100
+                        c_vis_m = PK0S0100.ft_to_m(c_vis_ft)
+                        cloudInfo = "垂直視程：" + str(c_vis_ft) + "ft(" + str(c_vis_m) + ")m"
+                        warning_flg.append(3)
+                    metarRet.append(cloudInfo)
+                    metarEng.append(metarInfo[ix1])
+                    ix1 = ix1 + 1
+                else:
+                    num_slash = 0
+                    for ix10 in range(len(metarInfo[ix1]) + 1):
+                        if metarInfo[ix1][ix10: ix10 + 1] == "/":
+                            num_slash = num_slash + 1
+                    if num_slash == 1:
+                        eof_flg = 1
+                    else:
+                        if metarInfo[ix1] == 'NSC' or metarInfo[ix1] == 'NCD' or metarInfo[ix1] == 'CLR' or metarInfo[ix1] == 'SKC':
+                            skyClear = '雲情報  ：雲無し'
+                            metarRet.append(skyClear)
                             metarEng.append(metarInfo[ix1])
-                            warning_flg.append(3)
-                            cloud_num = cloud_num + 1
+                            warning_flg.append(0)
                             ix1 = ix1 + 1
+                        else:    
+                            cloud_amount = metarInfo[ix1][0:3]
+                            cloud_base =  metarInfo[ix1][3:6]
+                            try:
+                                dummy = int(cloud_base)
+                            except ValueError:
+                                if cloud_base != "///":
+                                    eof_flg = 1
+                            if eof_flg == 0:
+                                if len(metarInfo[ix1]) > 6:
+                                    cloud_kind = metarInfo[ix1][6:]
+                                else:
+                                    cloud_kind = ""
+                                cloudInfo = WX0S0207.get_cloudInfo(cloud_amount, cloud_base, cloud_kind, cloud_num)
+                                metarRet.append(cloudInfo)
+                                metarEng.append(metarInfo[ix1])
+                                warning_flg.append(3)
+                                cloud_num = cloud_num + 1
+                                ix1 = ix1 + 1
 
   #ｃａｖｏｋ
     if metarInfo[ix1] == 'CAVOK':
@@ -265,7 +280,15 @@ def readMetar(metar):
         ix1 = ix1 + 1
         
   #気温露点温度
-    if (metarInfo[ix1][2:3] == '/' or metarInfo[ix1][3:4] == '/') and metarInfo[ix1][0:1] != 'R':
+    if metarInfo[ix1] == "/////":
+        metarRet.append("気    温：不明")
+        metarEng.append(metarInfo[ix1])
+        warning_flg.append(0)
+        metarRet.append("露点温度：不明")
+        metarEng.append(metarInfo[ix1])
+        warning_flg.append(0)
+        ix1 = ix1 + 1 
+    elif (metarInfo[ix1][2:3] == '/' or metarInfo[ix1][3:4] == '/') and metarInfo[ix1][0:1] != 'R':
         metarInfo_t1, metarInfo_td1 = metarInfo[ix1].split("/")
         if metarInfo_t1[0:1] == "M":
             metarInfo_t = 0 - int(metarInfo_t1[1:3])
@@ -312,9 +335,12 @@ def readMetar(metar):
         ix1 = ix1 + 1
     try:
         if metarInfo[ix1][0:1] == 'Q' and len(metarInfo[ix1]) == 5:
-            hpa_umu = 1
-            metarInfo_hpa = metarInfo[ix1][1:5]
-            hPaInfo = 'QNH気圧 ：' + str(metarInfo_hpa) + 'hPa'
+            if metarInfo[ix1][1:5] == "////":
+                hPaInfo ='QNH気圧 ：不明'
+            else:
+                hpa_umu = 1
+                metarInfo_hpa = metarInfo[ix1][1:5]
+                hPaInfo = 'QNH気圧 ：' + str(metarInfo_hpa) + 'hPa'
             metarRet.append(hPaInfo)
             metarEng.append(metarInfo[ix1])
             warning_flg.append(0)
@@ -529,17 +555,23 @@ def get_rmk(metarInfo, metarRet, metarEng, warning_flg, ix1):
 
         #気圧補正値
             elif metarInfo[ix1][0:1] == 'A':
-                if re.search(".",metarInfo[ix1]) and len(metarInfo[ix1]) != 5:
-                    dummy_inHg1, dummy_inHg2 = metarInfo[ix1][1:].split(".")
-                    dummy_inHg = dummy_inHg1 + dummy_inHg2
-                    rmk_inHg = round((int(dummy_inHg) / 100), 2)
+                if metarInfo[ix1] == "A////":
+                    hPaInfo = 'QNH気圧 ：不明'
+                    metarRet.append(hPaInfo)
+                    metarEng.append(metarInfo[ix1])
+                    warning_flg.append(0)
                 else:
-                    rmk_inHg = round((int(metarInfo[ix1][1:5]) / 100), 2)
-                rmk_hpa = PK0S0100.inHg_to_hPa(rmk_inHg)
-                hPaInfo = 'QNH気圧 ：' + str(rmk_inHg) + 'inHg（' + str(rmk_hpa) + 'hPa）'
-                metarRet.append(hPaInfo)
-                metarEng.append(metarInfo[ix1])
-                warning_flg.append(0)
+                    if re.search(".",metarInfo[ix1]) and len(metarInfo[ix1]) != 5:
+                        dummy_inHg1, dummy_inHg2 = metarInfo[ix1][1:].split(".")
+                        dummy_inHg = dummy_inHg1 + dummy_inHg2
+                        rmk_inHg = round((int(dummy_inHg) / 100), 2)
+                    else:
+                        rmk_inHg = round((int(metarInfo[ix1][1:5]) / 100), 2)
+                    rmk_hpa = PK0S0100.inHg_to_hPa(rmk_inHg)
+                    hPaInfo = 'QNH気圧 ：' + str(rmk_inHg) + 'inHg（' + str(rmk_hpa) + 'hPa）'
+                    metarRet.append(hPaInfo)
+                    metarEng.append(metarInfo[ix1])
+                    warning_flg.append(0)
             elif metarInfo[ix1][0:3] == "QFE":
                 qfeInfo = 'QFE気圧 ：' + metarInfo[ix1][3:] + 'hPa'
                 metarRet.append(qfeInfo)
@@ -553,6 +585,14 @@ def get_rmk(metarInfo, metarRet, metarEng, warning_flg, ix1):
                 metarEng.append(metarInfo[ix1])
                 warning_flg.append(0)
 
+        #風向計測機器
+            elif metarInfo[ix1] == "WIND" and metarInfo[ix1 + 1] == "BY":
+                wind_rw = metarInfo[ix1 + 2][5:]
+                wind_equipment = f"風向計測機器：RW{wind_rw}による風向観測"
+                metarRet.append(wind_equipment)
+                metarEng.append(f"{metarInfo[ix1]} {metarInfo[ix1 + 1]} {metarInfo[ix1 + 2]}")
+                warning_flg.append(0)
+                ix1 = ix1 + 2
             ix1 = ix1 + 1
     except IndexError:
         return metarRet, metarEng, warning_flg, ix1

@@ -29,20 +29,31 @@ def translate_MetarTaf(fileName, path):
             else:
                 metarJpn, metarEng, warning_flg = WX0S0205.readMetar(metar[ix1])
             if len(metar[ix1]) > 110:
+                # 1行目の分割位置を探す
                 for ix10 in range(110):
                     if metar[ix1][110 - ix10 - 1 : 110 - ix10] == " ":
                         metar1 = metar[ix1][0:110 - ix10 - 1]
-                        metar2 = metar[ix1][110 - ix10:]
+                        metar_rest = metar[ix1][110 - ix10:]
                         break
-                metarJpn.insert(0, metar2)
-                metarJpn.insert(0, metar1)
-                metarJpn.insert(2, "")
-                metarEng.insert(0, "")
-                metarEng.insert(1, "")
-                metarEng.insert(2, "")
-                warning_flg.insert(0, 0)
-                warning_flg.insert(0, 0)
-                warning_flg.insert(1, 0)
+                # 2行目も110文字を超える場合は3行目に分割
+                if len(metar_rest) > 110:
+                    for ix10 in range(110):
+                        if metar_rest[110 - ix10 - 1 : 110 - ix10] == " ":
+                            metar2 = metar_rest[0:110 - ix10 - 1]
+                            metar3 = metar_rest[110 - ix10:]
+                            break
+                    metarJpn.insert(0, metar3)
+                    metarJpn.insert(0, metar2)
+                    metarJpn.insert(0, metar1)
+                    metarJpn.insert(3, "")
+                    metarEng.insert(0, "")
+                    metarEng.insert(1, "")
+                    metarEng.insert(2, "")
+                    metarEng.insert(3, "")
+                    warning_flg.insert(0, 0)
+                    warning_flg.insert(0, 0)
+                    warning_flg.insert(0, 0)
+                    warning_flg.insert(3, 0)
             else:
                 metarJpn.insert(0, metar[ix1])
                 metarJpn.insert(1, "")
