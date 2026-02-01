@@ -1,6 +1,6 @@
 #PGM-ID:WX0S0205
 #PGM-NAME:[P]WX欧式METAR
-#最終更新日:2026/01/02
+#最終更新日:2026/02/01
 
 import re
 
@@ -562,6 +562,7 @@ def get_rmk(metarInfo, metarRet, metarEng, warning_flg, ix1):
                     warning_flg.append(0)
                 else:
                     if re.search(".",metarInfo[ix1]) and len(metarInfo[ix1]) != 5:
+                        print(metarInfo[ix1])
                         dummy_inHg1, dummy_inHg2 = metarInfo[ix1][1:].split(".")
                         dummy_inHg = dummy_inHg1 + dummy_inHg2
                         rmk_inHg = round((int(dummy_inHg) / 100), 2)
@@ -593,6 +594,23 @@ def get_rmk(metarInfo, metarRet, metarEng, warning_flg, ix1):
                 metarEng.append(f"{metarInfo[ix1]} {metarInfo[ix1 + 1]} {metarInfo[ix1 + 2]}")
                 warning_flg.append(0)
                 ix1 = ix1 + 2
+        # #落雷情報
+        #     elif metarInfo[ix1] == "TS" and metarInfo[ix1 + 1] == "HIT":
+        #         ts_info = f"{metarInfo[ix1]} {metarInfo[ix1 + 1]} {metarInfo[ix1 + 2]} {metarInfo[ix1 + 3]} {metarInfo[ix1 + 4]}"
+        #         ts_str = "＜雷情報＞"
+        #         metarRet.append(ts_str)
+        #         metarEng.append(ts_info)
+        #         warning_flg.append(0)
+        #         ts_str = "  場 所：地上観測所"
+        #         metarRet.append(ts_str)
+        #         metarEng.append(ts_info)
+        #         warning_flg.append(0)
+        #         ts_time_jst = PK0S0100.utc_to_jst([90,int(metarInfo[ix1 + 4][0:2]), int(metarInfo[ix1 + 4][2:4])])
+        #         ts_str = f"  時間：{str(ts_time_jst[1])}:{str(ts_time_jst[2])}(JST)"
+        #         metarRet.append(ts_str)
+        #         metarEng.append(ts_info)
+        #         warning_flg.append(0)
+        #         ix1 = ix1 + 3
             ix1 = ix1 + 1
     except IndexError:
         return metarRet, metarEng, warning_flg, ix1
@@ -637,7 +655,7 @@ def get_cloud_rmk(inp_cloud):
 
 def check_PIREP(input):
     pirep_flg = 0
-    pirep_word = ["MOD", "FBL","LGT", "SEV", "EXTRM", "VIRGA", "ICE", "TURB", "GR", "BR", "TS", "TCU", "CB", "AND", "ABT"]
+    pirep_word = ["MOD", "FBL","LGT", "SEV", "EXTRM", "VIRGA", "ICE", "TURB", "GR", "BR", "TS", "TCU", "CB", "AND", "ABT", "WS"]
     if input in pirep_word:
         pirep_flg = 1
     else:

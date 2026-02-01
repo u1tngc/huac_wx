@@ -1,5 +1,6 @@
 #PGM-ID:WX0S0208
 #PGM-NAME:[P]WX操縦士報告(PIREP)
+#最終更新日:2026/01/02
 
 import re
 
@@ -45,37 +46,49 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
         "EXTRM": "激しい"
     }
     try:
-    #TURB ICE
-        if metarInfo[ix2 + 1] == "TURB" or metarInfo[ix2 + 1] == "ICE" or metarInfo[ix2 + 3] == "TURB" or metarInfo[ix2 + 3] == "ICE":
+    #TURB ICE WS
+        if metarInfo[ix2 + 1] == "TURB" or metarInfo[ix2 + 1] == "ICE" or metarInfo[ix2 + 3] == "TURB" or metarInfo[ix2 + 3] == "ICE" or (metarInfo[ix2] == "TS" and metarInfo[ix2 + 1] == "HIT") or metarInfo[ix2 + 1] == "WS" or metarInfo[ix2] == "WS":
             metarRet.append(f"＜報告等{pirep_num}＞")
             metarEng.append("")
             warning_flg.append(0)
-            #強度
-            if metarInfo[ix2 + 1] == "TO":
-                pirep_strength_jp = strength[metarInfo[ix2]]
-                pirep_strength_jp = pirep_strength_jp + "から" + strength[metarInfo[ix2 + 2]] + "程度"
-                pirep_strength_eg = f"{metarInfo[ix2]} {metarInfo[ix2 + 1]} {metarInfo[ix2 + 2]} "
-                ix2 = ix2 + 3
+            tiw_strength_flg = 0
+            if metarInfo[ix2] == "TS" and metarInfo[ix2 + 1] == "HIT":
+                pirep_tsHit = 1
+                pirep_wx_jp = "雷の直撃"
+                pirep_wx_eg = f"{metarInfo[ix2]} {metarInfo[ix2 + 1]} {metarInfo[ix2 + 2]}"
+                ix2 = ix2 + 2
             else:
-                pirep_strength_jp = strength[metarInfo[ix2]] + "程度"
-                pirep_strength_eg = metarInfo[ix2]
-                ix2 = ix2 + 1
-            #現象
-            if metarInfo[ix2] == "TURB" or "ICE":
-                if metarInfo[ix2 + 1] == "AND":
-                    pirep_wx_jp = wx[metarInfo[ix2]] + "と" + wx[metarInfo[ix2 + 2]]
-                    pirep_wx_eg = metarInfo[ix2] + " " + metarInfo[ix2 + 1] + " " + metarInfo[ix2 + 2]
-                    ix2 = ix2 + 3
-                else:
-                    pirep_wx_jp = wx[metarInfo[ix2]]
-                    pirep_wx_eg = metarInfo[ix2]
-                    ix2 = ix2 + 1
+                pirep_tsHit = 0
+                #強度
+                if metarInfo[ix2] in strength:
+                    tiw_strength_flg = 1
+                    if metarInfo[ix2 + 1] == "TO":
+                        pirep_strength_jp = strength[metarInfo[ix2]]
+                        pirep_strength_jp = pirep_strength_jp + "から" + strength[metarInfo[ix2 + 2]] + "程度"
+                        pirep_strength_eg = f"{metarInfo[ix2]} {metarInfo[ix2 + 1]} {metarInfo[ix2 + 2]} "
+                        ix2 = ix2 + 3
+                    else:
+                        pirep_strength_jp = strength[metarInfo[ix2]] + "程度"
+                        pirep_strength_eg = metarInfo[ix2]
+                        ix2 = ix2 + 1
+                #現象
+                if metarInfo[ix2] in ("TURB", "ICE", "WS"):
+                    if metarInfo[ix2 + 1] == "AND":
+                        pirep_wx_jp = wx[metarInfo[ix2]] + "と" + wx[metarInfo[ix2 + 2]]
+                        pirep_wx_eg = metarInfo[ix2] + " " + metarInfo[ix2 + 1] + " " + metarInfo[ix2 + 2]
+                        ix2 = ix2 + 3
+                    else:
+                        pirep_wx_jp = wx[metarInfo[ix2]]
+                        pirep_wx_eg = metarInfo[ix2]
+                        ix2 = ix2 + 1
             metarRet.append(f"  現    象：{pirep_wx_jp}")
             metarEng.append(pirep_wx_eg)
             warning_flg.append(0)
-            metarRet.append(f"  強    度：{pirep_strength_jp}")
-            metarEng.append(pirep_strength_eg)
-            warning_flg.append(0)
+            if pirep_tsHit == 0:
+                if tiw_strength_flg == 1:
+                    metarRet.append(f"  強    度：{pirep_strength_jp}")
+                    metarEng.append(pirep_strength_eg)
+                    warning_flg.append(0)
             ix2 = ix2 + 1
 
             #時刻
@@ -115,7 +128,7 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
                 pirep_d_jp = metarInfo[ix2]
                 ix2 = ix2 + 1
                 pirep_d_flg = 1
-
+                
             if check_direction(metarInfo[ix2],1): #方角
                 pirep_v_eg = metarInfo[ix2]
                 pirep_v_jp = check_direction(metarInfo[ix2],2)
@@ -262,6 +275,8 @@ def translate_PIREP(metarInfo, metarRet, metarEng, warning_flg, ix1, pirep_num):
             metarEng.append(pirep_wx_eg)
             warning_flg.append(0)  
             ix2 = ix2 + 1
+            if metarInfo[ix2] == "OBS":
+                ix2 = ix2 + 1
             if pirep_strength_flg == 1:
                 metarRet.append(f"  強    度：{pirep_strength_jp}") 
                 metarEng.append(pirep_strength_eg)
@@ -417,7 +432,9 @@ def get_location(input_location):
     if input_location in location_list:
         ret_location = location_list[input_location]
     else:
-        if len(input_location) == 3:
+        if input_location[0:3] == "RWY":
+            ret_location = input_location
+        elif len(input_location) == 3:
             ret_location = input_location + "(VOR/DME等)"
         elif len(input_location) == 5:
             ret_location = input_location + "(WAYポイント)"
